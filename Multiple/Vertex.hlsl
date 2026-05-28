@@ -29,13 +29,14 @@ struct VertexOut
 
 VertexOut main(VertexIn vin)
 {
-    VertexOut vout;
-
-    // transforma para espaço homogêneo de recorte
-    vout.PosH = mul(float4(vin.PosL, 1.0f), WorldViewProj);
-
-    // apenas passa a cor do vértice para o pixel shader
-    vout.Color = vin.Color;
-
-    return vout;
+    VertexOutput output;
+    output.pos = mul(float4(input.pos, 1.0f), WorldViewProj);
+    
+    // Se a propriedade alpha do override estiver preenchida, substitui a cor original
+    if (ColorOverride.a > 0.5f)
+        output.color = float4(ColorOverride.rgb, 1.0f);
+    else
+        output.color = input.color;
+        
+    return output;
 }
